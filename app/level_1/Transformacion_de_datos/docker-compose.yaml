@@ -1,0 +1,12 @@
+version: '3'
+services:
+  tfx:
+    image: tensorflow/tfx:1.12.0
+    container_name: tfx
+    ports:
+      - "8888:8888"
+      - "6006:6006"
+    volumes:
+      - "${PWD}:/tfx/src"
+    entrypoint: /run_jupyter.sh
+
