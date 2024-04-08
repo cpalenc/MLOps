@@ -1,6 +1,6 @@
 # Project 1 - Grupo 1
 
-![alt text](https://github.com/oecorrechag/MLOps/blob/main/images/logo.PNG)
+![alt text](https://github.com/cpalenc/MLOps/blob/main/images/logo.PNG)
 
 Class: MLOps <br>
 Code: 11179 <br>
@@ -9,7 +9,7 @@ Members:
 
     Daniel Chavarro - @anielFchavarro
     Cristhian Palencia - @cpalenc
-    Oscar Correa - @oecorrechag
+    Oscar Correa - @cpalenc
 
 ## Table of Contents
 
@@ -42,25 +42,25 @@ docker compose up
 
 4. This command will display the following:
 
-![alt text](https://github.com/oecorrechag/MLOps/blob/main/images/open_html.png)
+![alt text](https://github.com/cpalenc/MLOps/blob/main/images/open_html.png)
 
 In the image, the console output is displayed, and the box indicates the token. This token should be entered into an internet browser (of your choice) to launch the Jupyter Notebook.
 
 5. Once inside Jupyter, click on the "Build" option to access the content of Project 1. 
 
-![alt text](https://github.com/oecorrechag/MLOps/blob/main/images/open_jupyter.png)
+![alt text](https://github.com/cpalenc/MLOps/blob/main/images/open_jupyter.png)
 
 6. Open the file TFT_convertype.ipynb.
 
 Within this file, you will find the solution to the project. 
 
-![alt text](https://github.com/oecorrechag/MLOps/blob/main/images/open_project.PNG)
+![alt text](https://github.com/cpalenc/MLOps/blob/main/images/open_project.PNG)
 
 ### Google
 
 There is an alternative to using the document using Google Colab. To utilize it, please follow these steps:
 
-![alt text](https://github.com/oecorrechag/MLOps/blob/main/images/google.PNG)
+![alt text](https://github.com/cpalenc/MLOps/blob/main/images/google.PNG)
 
 1. Upload the TFT_convertype.ipynb file into a Google Colab Notebook.
 
@@ -78,7 +78,7 @@ Nota: Installing this library may take between 5 to 10 minutes.
 
 4. It is possible that during the first execution, it may request a kernel restart; if so, the kernel will restart automatically.
 
-![alt text](https://github.com/oecorrechag/MLOps/blob/main/images/google_kernel.PNG)
+![alt text](https://github.com/cpalenc/MLOps/blob/main/images/google_kernel.PNG)
 
 <hr>
 
