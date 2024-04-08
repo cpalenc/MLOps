@@ -1,2 +1,0 @@
-['remote "dataset-track"']
-    url = gs://model-dataset-tracker-ccps/dataset
