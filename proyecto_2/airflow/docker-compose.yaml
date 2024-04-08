@@ -28,6 +28,18 @@ x-airflow-common:
       condition: service_healthy
 
 services:
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow 
+    ports:
+      - "5000:5000"
+    environment:
+      MLFLOW_SERVER_DEFAULT_ARTIFACT_ROOT: "http://minio:9000/mlflow"
+    depends_on:
+      - minio
+    restart: always
+
   minio:
     container_name: minio
     command: server /data --console-address ":9001"
@@ -88,7 +100,9 @@ services:
   airflow-webserver:
     <<: *airflow-common
     command: webserver
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow 
     ports:
       - "8080:8080"
     healthcheck:
@@ -134,7 +148,9 @@ services:
   airflow-worker:
     <<: *airflow-common
     command: celery worker
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow 
     healthcheck:
       test:
         - "CMD-SHELL"
