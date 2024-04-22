@@ -1,0 +1,122 @@
+version: '3'
+services: 
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile_app # Build from the current directory (assuming your FastAPI app is here)
+    ports:
+      - "7000:7000"  # Map port 7000 of the container to port 7000 on your host
+    volumes:
+      - ./data:/data_model  
+    depends_on:
+      - mlflow_serv
+      - minio
+    environment:
+      MLFLOW_URI: "http://mlflow_serv:5000"
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: admin
+      AWS_SECRET_ACCESS_KEY: supersecret
+
+  mlflow_serv:
+    build:
+      context: .
+      dockerfile: Dockerfile_mlflow
+    ports:
+      - "5000:5000" 
+    command: >
+      mlflow server
+      --backend-store-uri mysql+pymysql://root:airflow@mysql:3306/mlflow
+      --default-artifact-root s3://mlflows3
+      --host 0.0.0.0
+      --port 5000
+      --serve-artifacts
+    volumnes:
+      - ./mlflow:/mlflow
+    depends_on:
+      - mysql
+      - minio
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: admin
+      AWS_SECRET_ACCESS_KEY: supersecret
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - network_1
+
+  minio:
+    container_name: Minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=supersecret
+    image: quay.io/minio/minio:latest
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - ./minio:/data
+    restart: unless-stopped
+
+
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - "8082:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: airflow
+      MYSQL_DATABASE: cover_type
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: always
+    stdin_open: true 
+    tty: true        
+    volumes:
+      - mysql_data:/var/lib/mysql
+  
+
+
+  locustmaster:
+    image: locustio/locust
+    container_name: locustmaster
+    build:
+      context: .
+      dockerfile: Dockerfile_loctus
+    ports:
+    - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --master -H http://locustmaster:8089
+    networks:
+      - network_1
+  
+  locustworker:
+    image: locustio/locust
+    container_name: locustworker
+    build:
+      context: .
+      dockerfile: Dockerfile_loctus
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --worker --master-host locustmaster
+    networks:
+      - network_1
+  
+volumes:
+  minio-data:
+  mysql_data:
+
+networks:
+  network_1:
+    driver: bridge
