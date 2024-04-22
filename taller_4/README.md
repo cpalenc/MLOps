@@ -1,4 +1,4 @@
-# Project 1 - Grupo 1
+# Taller 4 - Grupo 1
 
 ![alt text](images/logo.PNG)
 
@@ -13,11 +13,42 @@ Members:
 
 ## Table of Contents
 
-- [Locust with Docker compose](#Locust)
-- [Parts of Locust](#Parts)
-- [Test with Locust](#Test)
+- <a href='#1'>Local usage of Locust</a>
+- <a href='#2'>Locust with Docker compose</a>
+- <a href='#3'>Parts of Locust</a>
+- <a href='#4'>Test with Locust</a>
 
-### Locust
+
+### <a id='1'>Local usage of Locust </a>
+
+1. Download the repository.
+
+```bash
+ssh git clone https://github.com/cpalenc/MLOps.git
+```
+
+2. Navigate to the Taller 4 branch within the project_1 folder.
+
+```bash
+cd MLOps/
+git checkout taller_4
+cd taller_4
+```
+
+3. Navigate to the "App" folder to run the FastAPI application, and execute it with the following instruction.
+
+```bash
+ssh python3 -m uvicorn app:app --reload
+```
+
+4. In another terminal, navigate to the "locust" folder to run the tests using Locust, and execute the following instruction.
+
+```bash
+ssh locust -f locustfile.py
+```
+
+### <a id='2'>Locust with Docker compose </a>
+
 
 How to run docker compose
 
@@ -60,7 +91,8 @@ For accessing the API console, please input:
 http://localhost:8000/
 ```
 
-### Parts
+### <a id='3'>Parts of Locust </a>
+
 
 Upon accessing Locust, you will encounter the following:
 
@@ -90,7 +122,7 @@ These are the most relevant parts of Locust.
 
 - LOGS: Hardware information and some key execution points.
 
-### Test
+### <a id='4'>Test with Locust </a>
 
 A maximum of 10,000 connections were simulated in increments of 10 on the API built in FastAPI, which took approximately 30 minutes. Variabilities such as PC usage or connections were not controlled.
 
