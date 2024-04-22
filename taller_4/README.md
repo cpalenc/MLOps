@@ -24,7 +24,7 @@ Members:
 1. Download the repository.
 
 ```bash
-ssh git clone https://github.com/cpalenc/MLOps.git
+git clone https://github.com/cpalenc/MLOps.git
 ```
 
 2. Navigate to the Taller 4 branch within the project_1 folder.
@@ -38,13 +38,13 @@ cd taller_4
 3. To run the FastAPI App, execute the following command:
 
 ```bash
-ssh python3 -m uvicorn main:app --reload
+python3 -m uvicorn main:app --reload
 ```
 
 4. In another terminal, to run the tests using Locust, execute the following command:
 
 ```bash
-ssh locust -f locustfile.py
+locust -f locustfile.py
 ```
 
 ### <a id='2'>Locust with Docker compose </a>
@@ -55,7 +55,7 @@ How to run docker compose
 1. Download the repository.
 
 ```bash
-ssh git clone https://github.com/cpalenc/MLOps.git
+git clone https://github.com/cpalenc/MLOps.git
 ```
 
 2. Navigate to the Taller 4 branch within the project_1 folder.
