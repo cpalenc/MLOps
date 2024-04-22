@@ -35,13 +35,13 @@ git checkout taller_4
 cd taller_4
 ```
 
-3. Navigate to the "App" folder to run the FastAPI application, and execute it with the following instruction.
+3. To run the FastAPI App, execute the following command:
 
 ```bash
-ssh python3 -m uvicorn app:app --reload
+ssh python3 -m uvicorn main:app --reload
 ```
 
-4. In another terminal, navigate to the "locust" folder to run the tests using Locust, and execute the following instruction.
+4. In another terminal, to run the tests using Locust, execute the following command:
 
 ```bash
 ssh locust -f locustfile.py
