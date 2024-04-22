@@ -1,0 +1,13 @@
+Method,Name,Error,Occurrences
+POST,/predict,"ConnectionResetError(104, 'Connection reset by peer')",94
+GET,/,RemoteDisconnected('Remote end closed connection without response'),1276
+GET,/sentiment/I%20miss%20Ana,"ConnectionResetError(104, 'Connection reset by peer')",25
+GET,/sentiment/I%20feel%20so%20asleep,"ConnectionResetError(104, 'Connection reset by peer')",25
+GET,/,"ConnectionResetError(104, 'Connection reset by peer')",102
+GET,/sentiment/I%20love%20elephats,RemoteDisconnected('Remote end closed connection without response'),321
+GET,/sentiment/Javier%20eats%20bread,RemoteDisconnected('Remote end closed connection without response'),348
+GET,/sentiment/I%20feel%20so%20asleep,RemoteDisconnected('Remote end closed connection without response'),310
+POST,/predict,RemoteDisconnected('Remote end closed connection without response'),1256
+GET,/sentiment/I%20miss%20Ana,RemoteDisconnected('Remote end closed connection without response'),308
+GET,/sentiment/Javier%20eats%20bread,"ConnectionResetError(104, 'Connection reset by peer')",19
+GET,/sentiment/I%20love%20elephats,"ConnectionResetError(104, 'Connection reset by peer')",23
