@@ -1,2 +1,0 @@
-FROM apache/airflow:2.6.0
-RUN pip install SQLAlchemy==1.4.26 pandas scikit-learn==0.24.2 joblib mlflow

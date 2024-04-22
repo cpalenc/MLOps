@@ -1,0 +1,50 @@
+version: '3.8'  # Using a recent version for potential improvements
+
+services:
+  # Your FastAPI application service
+  app:
+    build: .  # Build from the current directory (assuming your FastAPI app is here)
+    ports:
+      - "7000:7000"  # Map port 7000 of the container to port 7000 on your host
+    depends_on:
+      - mlflow  # Wait for the MLflow service to be ready before starting app
+    volumes:
+      - ./data:/data_model  # Mount the `data` directory on your host to `/data_model` in the container
+
+  # MLflow service
+  mlflow:
+    image: continuumio/miniconda3:latest  # Use the latest Miniconda image for flexibility
+    ports:
+      - "5000:5000"  # Map port 5000 of the container to port 5000 on your host
+    volumes:
+      - ./mlflow:/mlflow  # Mount the `mlflow` directory on your host to store artifacts
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000  # Set tracking URI
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000  # Set Minio endpoint for artifacts
+      - AWS_ACCESS_KEY_ID=admin  # Minio access credentials (replace with your own)
+      - AWS_SECRET_ACCESS_KEY=supersecret  # Replace with a secure password
+    command: >  # Use a multi-line command
+      bash -c "
+        conda install -c conda-forge mlflow  # Install MLflow
+        mlflow server --host 0.0.0.0 --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root s3://mlflow/artifacts
+      "
+
+  # Minio object storage service
+  minio:
+    image: quay.io/minio/minio:latest  # Use the latest Minio image
+    container_name: Minio  # Set a custom container name
+    ports:
+      - '9000:9000'  # Map Minio port 9000 to port 9000 on your host
+      - '9001:9001'  # Map Minio console port 9001 to port 9001 on your host (optional)
+    volumes:
+      - ./minio:/data  # Mount the `minio` directory on your host to store Minio data
+    restart: unless-stopped  # Restart the container automatically if it stops
+
+# Optional: Networks configuration (if you need to connect these services across different Docker hosts)
+# networks:
+#   my-network:
+#     external: true  # Connect to an existing network
+
+# Volumes configuration (if you want to persist data outside of containers)
+# volumes:
+#   mlflow-data:  # Define a named volume

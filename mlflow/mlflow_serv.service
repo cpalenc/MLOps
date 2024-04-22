@@ -1,0 +1,20 @@
+[Unit]
+Description=MLflow tracking server
+After=network.target 
+
+[Service]
+User=Cristhian CAmilo Palencia Sevilla
+Restart=on-failure
+RestartSec=3
+WorkingDirectory=/Users/CPALENC/Documents/Repos_U/MLOps/mlflow/
+Environment=MLFLOW_S3_ENDPOINT_URL=http://0.0.0.0:9000
+Environment=AWS_ACCESS_KEY_ID=admin
+Environment=AWS_SECRET_ACCESS_KEY=supersecret
+ExecStart= python3 -m mlflow server \
+--backend-store-uri sqlite:////Users/CPALENC/Documents/Repos_U/MLOps/mlflow/mlflow.db \
+--default-artifact-root s3://mlflows3/artifacts \
+--host 0.0.0.0 \
+--serve-artifacts
+
+[Install]
+WantedBy=multi-user.target

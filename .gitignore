@@ -1,0 +1,26 @@
+# docker
+/build
+/dist
+/env
+/tmp
+
+# other
+*.egg
+*.egg-info
+.coverage
+.pytest
+history.sqlite
+pip-freeze.lock
+
+# env
+.envrc
+venv/*
+
+# logs
+*.log
+*.jsonl
+*.gz
+
+# cache dirs
+__pycache__
+
