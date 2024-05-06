@@ -1,23 +1,40 @@
-from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from sqlalchemy import create_engine
-import pandas as pd
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from sklearn.feature_selection import RFE
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.metrics import accuracy_score, recall_score, f1_score
-from imblearn.over_sampling import SMOTE
-import mlflow
-from mlflow.models import infer_signature
-from mlflow import MlflowClient
+from airflow.utils.dates import days_ago
 import os
+import pandas as pd
+from sqlalchemy import create_engine
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from imblearn.over_sampling import SMOTE
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, f1_score
+import mlflow
+from mlflow.models.signature import infer_signature
+from mlflow.tracking import MlflowClient
 
-def tranformaciones():
-    
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+}
+
+dag = DAG(
+    'diabetes_ml_workflow',
+    default_args=default_args,
+    description='A Machine Learning workflow for diabetes prediction',
+    schedule_interval=None,
+    start_date=days_ago(1),
+    tags=['ml', 'diabetes'],
+)
+
+def preprocess_data():
+    os.environ['MLFLOW_S3_ENDPOINT_URL'] = "http://minio:9000"
+    os.environ['AWS_ACCESS_KEY_ID'] = 'admin'
+    os.environ['AWS_SECRET_ACCESS_KEY'] = 'supersecret'
+
     MYSQL_CONN_ID = 'mysql_conn'
     mysql_engine = create_engine('mysql://user2:password2@mysql2/database2')
     # Load data from MySQL
@@ -27,7 +44,7 @@ def tranformaciones():
     df = df.loc[:,['age', 'discharge_disposition_id', 'time_in_hospital', 'num_lab_procedures', 
                    'num_procedures', 'number_inpatient', 'diag_1', 'diag_2', 'diag_3', 'number_diagnoses', 
                    'readmitted']]
-    
+
     # Separar características (X) y variable objetivo (y)
     X = df.drop(['readmitted'], axis=1)
     y = df['readmitted']
@@ -45,15 +62,12 @@ def tranformaciones():
     ## Dividir conjunto de datos en entrenamiento y prueba
     X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
 
-    mlflow.set_tracking_uri("http://Mlflow:5000")
-    EXPERIMENT_NAME = "Readmitted-Survived-Classifier-Experiment"
-    mlflow.set_experiment(EXPERIMENT_NAME)
-    current_experiment = dict(mlflow.get_experiment_by_name(EXPERIMENT_NAME))
-    experiment_id = current_experiment['experiment_id']
+    mlflow.set_tracking_uri("http://mlflow:5000")
+    mlflow.set_experiment("diabetes-1")
+    mlflow.autolog(log_input_examples=True, log_model_signatures=True)
 
-    os.environ['MLFLOW_S3_ENDPOINT_URL'] = "http://Minio:9000"
-    os.environ['AWS_ACCESS_KEY_ID'] = 'admin'
-    os.environ['AWS_SECRET_ACCESS_KEY'] = 'supersecret'
+    current_experiment = dict(mlflow.get_experiment_by_name('diabetes-1'))
+    experiment_id = current_experiment['experiment_id']
 
     # Modelo Decision Tree
     model_name = 'Decision Tree'
@@ -75,29 +89,13 @@ def tranformaciones():
                                               registered_model_name=f"tracking-readmitted-{model_name}")
         mlflow.end_run() 
 
-    client = MlflowClient()
-    client.set_registered_model_tag("tracking-readmitted-Decision Tree", "task", "classification")
+        client = MlflowClient()
+        client.set_registered_model_tag("tracking-readmitted-Decision Tree", "task", "classification")
 
-# Define los argumentos del DAG
-default_args = {
-    'owner': 'airflow',
-    'depends_on_past': False,
-    'start_date': datetime(2024, 5, 6),
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
-}
-
-# Define el DAG
-dag = DAG('readmitted_classifier_dag',
-          default_args=default_args,
-          schedule_interval='@daily')
-
-# Define la tarea Python para ejecutar las transformaciones
-transform_task = PythonOperator(
-    task_id='transform_task',
-    python_callable=tranformaciones,
+preprocess_data_task = PythonOperator(
+    task_id='preprocess_data',
+    python_callable=preprocess_data,
     dag=dag,
 )
 
-# Establece la secuencia de tareas en el DAG
-transform_task
+preprocess_data_task
