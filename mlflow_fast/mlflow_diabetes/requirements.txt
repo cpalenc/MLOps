@@ -1,0 +1,8 @@
+mlflow
+pycaret
+scikit-learn
+scipy
+boto3
+requests
+seaborn
+xgboost
