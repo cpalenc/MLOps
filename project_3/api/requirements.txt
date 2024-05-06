@@ -1,4 +1,10 @@
 fastapi
 uvicorn
-requests
-streamlit
+mlflow
+pandas
+scikit-learn
+pydantic
+numpy
+sqlalchemy
+mysqlclient
+boto3
