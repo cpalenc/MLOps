@@ -10,6 +10,7 @@ scaler_std = {'mean': np.array([0.67732942, 0.10153072, 0.26144829, 0.32117825, 
                                0.0605452 , 0.23028769, 0.20487616, 0.21306782, 0.12835119])}
 
 # 3. Functions to standardize and predict.
+
 def func_transform(user_input):
     user_input_scaled = (user_input - scaler_min_max['min']) / (scaler_min_max['max'] - scaler_min_max['min'])
     user_input_scaled = (user_input_scaled - scaler_std['mean']) / scaler_std['std']
