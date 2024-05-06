@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\Programador\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose.yaml
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mysql1
+  name: mysql1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mysql1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\Programador\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose.yaml
+        kompose.version: 1.31.2 (a92241f79)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/project-2-default: "true"
+        io.kompose.service: mysql1
+    spec:
+      containers:
+        - args:
+            - --innodb-buffer-pool-size=256M
+            - --innodb-log-file-size=128M
+            - --innodb-flush-log-at-trx-commit=2
+          env:
+            - name: MYSQL_DATABASE
+              value: database1
+            - name: MYSQL_PASSWORD
+              value: password1
+            - name: MYSQL_ROOT_PASSWORD
+              value: rootpassword1
+            - name: MYSQL_USER
+              value: user1
+          image: mysql:5.7
+          name: db1
+          ports:
+            - containerPort: 3306
+              hostPort: 3306
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: db1-data
+      restartPolicy: Always
+      volumes:
+        - name: db1-data
+          persistentVolumeClaim:
+            claimName: db1-data
+status: {}
