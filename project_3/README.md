@@ -13,14 +13,14 @@ Members:
 
 ## Table of Contents
 
-- <a href='#1'>Resultados del Proyecto 3</a>
-- <a href='#2'>Locust with Docker compose</a>
-- <a href='#3'>Servicios</a>
-- <a href='#3.1'>Airflow</a>
-- <a href='#3.2'>MLflow</a>
-- <a href='#4'>Ingeniería de Datos</a>
-- <a href='#5'>Entrenamiento</a>
-- <a href='#6'>Entrenamiento</a>
+- <a href='#1'>Resultados del Proyecto 3 </a>
+- <a href='#2'>Locust with Docker compose </a>
+- <a href='#3'>Servicios </a>
+- <a href='#3.1'>Airflow </a>
+- <a href='#3.2'>MLflow </a>
+- <a href='#4'>Ingeniería de Datos </a>
+- <a href='#5'>Entrenamiento </a>
+- <a href='#6'>Despliegue de los Servicios </a>
 
 ### <a id='1'>Resultados del Proyecto 3 </a>
 
