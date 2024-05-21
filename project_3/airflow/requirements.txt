@@ -1,4 +1,4 @@
 mlflow==2.3.0
 requests==2.28.2
-ucimlrepo
+ucimlrepo==0.0.6
 imblearn
