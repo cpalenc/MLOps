@@ -1,4 +1,5 @@
-name: publish-images
+name: Construir y enviar imágenes Docker
+
 on:
   push:
     branches: [ main ]
@@ -6,38 +7,28 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+
 jobs:
-  docker:
+  build-and-push:
     runs-on: ubuntu-latest
-	strategy:
-	  matrix:
-		include:
-		  - image: your-docker-registry/app1
-		    dockerfile: app1/Dockerfile
-		  - image: user/app2
-		    dockerfile: your-docker-registry/app1
+
     steps:
-      -
-        name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v2
+
+      - name: Configurar Docker Hub
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-	  - 
-	    name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Construir y enviar imágenes
+        uses: docker/build-push-action@v3
         with:
-          images: ${{ matrix.image }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v4
-       	with:
-          context: .
-          file: ${{ matrix.dockerfile }}
+          context: ./ # Ruta al directorio principal del proyecto
+          file: Dockerfile # Especifica el archivo Dockerfile principal (o usa "*.dockerfile" para todos)
+          tags: |
+            your-docker-image-name:latest # Etiqueta para la imagen principal
+            your-docker-image-name:1.0 # Etiqueta para la versión 1.0
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }
+
