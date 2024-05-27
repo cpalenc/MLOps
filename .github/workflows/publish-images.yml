@@ -24,10 +24,10 @@ jobs:
       - name: Construir y enviar imágenes
         uses: docker/build-push-action@v3
         with:
-          context: ./ # Ruta al directorio principal del proyecto
-          file: Dockerfile # Especifica el archivo Dockerfile principal (o usa "*.dockerfile" para todos)
+          context: ./ 
+          file: *Dockerfile
           tags: |
-            your-docker-image-name:latest # Etiqueta para la imagen principal
-            your-docker-image-name:1.0 # Etiqueta para la versión 1.0
+            im:latest
+            im:1.0
           push: true
 
