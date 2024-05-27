@@ -1,5 +1,4 @@
-name: Publicar imágenes de Docker en Docker Hub
-
+name: publish-images
 on:
   push:
     branches: [ main ]
@@ -16,12 +15,12 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v2
 
-      - name: Configurar Docker Hub
+      - name: Setup Docker Hub
         run: |
           echo -e "${DOCKERHUB_PASSWORD}" | docker login --username ${DOCKERHUB_USERNAME} --password-stdin docker.io
 
       - name: Compilar y etiquetar imágenes
         run: docker build -t docker.io/${DOCKERHUB_USERNAME}/${repositorio}:latest .
 
-      - name: Empujar imágenes a Docker Hub
+      - name: Push to Docker Hub
         run: docker push docker.io/${DOCKERHUB_USERNAME}/${repositorio}:latest
