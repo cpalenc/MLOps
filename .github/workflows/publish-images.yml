@@ -22,9 +22,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
       - name: Imprimir ruta
-          run: |
-            echo "Ruta actual: $(pwd)"
-            echo "Ruta ../../: $(pwd ../../)"
+        run: |
+          echo "Ruta actual: $(pwd)"
+          echo "Ruta ../../: $(pwd ../../)"
 
       - name: Construir y enviar imágenes
         uses: docker/build-push-action@v3
