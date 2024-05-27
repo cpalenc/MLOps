@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: MLOps/project_4/airflow/Dockerfile
+          file: MLOps/project_4/api/Dockerfile
           tags: |
             airflow_ccps:latest
             airflow_ccps:1.0
