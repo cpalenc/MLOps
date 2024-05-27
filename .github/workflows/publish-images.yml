@@ -24,10 +24,10 @@ jobs:
       - name: Construir y enviar imágenes
         uses: docker/build-push-action@v3
         with:
-          context: ./ 
-          file: *Dockerfile
+          context: MLOps/project_4/airflow
+          file: Dockerfile
           tags: |
-            im:latest
-            im:1.0
+            airflow_ccps:latest
+            airflow_ccps:1.0
           push: true
 
