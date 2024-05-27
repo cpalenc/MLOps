@@ -6,27 +6,38 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKETHUB_USERNAME}}
-  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-
 jobs:
-  build-and-push:
+  docker:
     runs-on: ubuntu-latest
-
+	strategy:
+	  matrix:
+		include:
+		  - image: your-docker-registry/app1
+		    dockerfile: app1/Dockerfile
+		  - image: user/app2
+		    dockerfile: your-docker-registry/app1
     steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v2
-
-      - name: Login to Docker Hub
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-
-      - name: Compilar y etiquetar imágenes
-        run: docker build -t docker.io/${DOCKERHUB_USERNAME}/${repositorio}:latest .
-
-      - name: Push to Docker Hub
-        run: docker push docker.io/${DOCKERHUB_USERNAME}/${repositorio}:latest
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+	  - 
+	    name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ matrix.image }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
+       	with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }
