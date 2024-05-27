@@ -1,5 +1,4 @@
-name: Construir y enviar imágenes Docker
-
+name: publish-images
 on:
   push:
     branches: [ main ]
