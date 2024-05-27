@@ -1,0 +1,27 @@
+name: Publicar imágenes de Docker en Docker Hub
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKETHUB_USERNAME}}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v2
+
+      - name: Configurar Docker Hub
+        run: |
+          echo -e "${DOCKERHUB_PASSWORD}" | docker login --username ${DOCKERHUB_USERNAME} --password-stdin docker.io
+
+      - name: Compilar y etiquetar imágenes
+        run: docker build -t docker.io/${DOCKERHUB_USERNAME}/${repositorio}:latest .
+
+      - name: Empujar imágenes a Docker Hub
+        run: docker push docker.io/${DOCKERHUB_USERNAME}/${repositorio}:latest
