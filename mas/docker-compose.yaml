@@ -1,0 +1,89 @@
+services:
+
+  mlflow:
+    build: './mlflow'
+    ports:
+      - "5000:5000"
+    container_name: Mlflow
+    environment:
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY_ID=supersecret
+      # MLFLOW_SERVER_DEFAULT_ARTIFACT_ROOT: "http://minio:9000/mlflow"
+    entrypoint: bash -c "mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root s3://mlflow/ --host 0.0.0.0"
+
+
+  minio:
+    image: minio/minio
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    container_name: Minio
+    command: server /data --console-address ':9001' --address ':9000'
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=supersecret
+    volumes:
+      - ./minio:/data
+
+
+  # fastapi:
+  #   build: './fast'
+  #   volumes:
+  #     - ./app:/code/app
+  #   ports:
+  #     - "8000:8000"
+  #   container_name: Fastapi
+  #   depends_on:
+  #     - mlflow
+  #     - minio
+  #   environment:
+  #     MLFLOW_URI: "http://Mlflow:5000"
+  #     MLFLOW_S3_ENDPOINT_URL: http://Minio:9000
+  #     AWS_ACCESS_KEY_ID: admin
+  #     AWS_SECRET_ACCESS_KEY: supersecret
+
+
+  # stream:
+  #   build: './stream'
+  #   ports:
+  #     - "8090:8502"
+  #   container_name: Stream
+  #   depends_on:
+  #     - fastapi
+
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    container_name: Mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: airflow
+      MYSQL_DATABASE: db
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t    
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+
+  jupyter:
+    build: './jupyter'
+    ports:
+      - "8888:8888"
+    container_name: Jupyter
+    environment:
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY_ID=supersecret
+
+
+volumes:
+  postgres-db-volume:
+  mysql_data:
