@@ -90,6 +90,16 @@ x-airflow-common:
 
 
 services:
+  jupyter:
+    build:
+      context: ./jupiter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./jupiter/notebooks:/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+ 
   fastapi:
     build:
       context: ./api
