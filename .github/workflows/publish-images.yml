@@ -1,4 +1,4 @@
-name: Construir y enviar imágenes Docker
+name: Publicar Imágenes
 
 on:
   push:
@@ -7,28 +7,66 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout del repositorio
         uses: actions/checkout@v3
 
       - name: Configurar Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      - name: Construir y enviar imágenes
+      - name: Construir y enviar imagen de Airflow
         uses: docker/build-push-action@v3
         with:
-          context: ./ # Ruta al directorio principal del proyecto
-          file: Dockerfile # Especifica el archivo Dockerfile principal (o usa "*.dockerfile" para todos)
+          context: ./project_4/airflow
+          file: ./project_4/airflow/Dockerfile
           tags: |
-            your-docker-image-name:latest # Etiqueta para la imagen principal
-            your-docker-image-name:1.0 # Etiqueta para la versión 1.0
+            ${{ secrets.DOCKERHUB_USERNAME }}/airflow:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/airflow:1.0
+          push: true
+      
+      - name: Construir y enviar imagen de Airflow
+        uses: docker/build-push-action@v3
+        with:
+          context: ./project_4/jupiter
+          file: ./project_4/jupiter/Dockerfile
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/airflow:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/airflow:1.0
           push: true
 
+      - name: Construir y enviar imagen de API
+        uses: docker/build-push-action@v3
+        with:
+          context: ./project_4/api
+          file: ./project_4/api/Dockerfile
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/api:1.0
+          push: true
+
+      - name: Construir y enviar imagen de MLflow
+        uses: docker/build-push-action@v3
+        with:
+          context: ./project_4/mlflow
+          file: ./project_4/mlflow/Dockerfile
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/mlflow:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/mlflow:1.0
+          push: true
+
+      - name: Construir y enviar imagen de Streamlit
+        uses: docker/build-push-action@v3
+        with:
+          context: ./project_4/streamlit
+          file: ./project_4/streamlit/Dockerfile
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:1.0
+          push: true
