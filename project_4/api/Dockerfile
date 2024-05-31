@@ -5,7 +5,7 @@ WORKDIR /code
 
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install --upgrade -r requirements.txt
 
 # Copiar todos los archivos de tu aplicación en el directorio actual al /code en el contenedor
 COPY . /code

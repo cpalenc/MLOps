@@ -91,7 +91,7 @@ x-airflow-common:
 
 services:
   jupyter:
-    image: ingccps/jupiter:1.0
+    image: ingccps/jupiter:latest
     ports:
       - "8888:8888"
     volumes:
@@ -100,17 +100,30 @@ services:
       - JUPYTER_ENABLE_LAB=yes
  
   fastapi:
-    image: ingccps/fastapi:1.0
+    #build: './api'
+    image: ingccps/api:latest
+    volumes:
+      - ./app:/code/app
     ports:
-      - "8002:8002"  
-  
-  streamlit:
-    image: ingccps/streamlit:1.0
+      - "8000:8000"
+    container_name: Fastapi
+    depends_on:
+      - mlflow
+      - minio
+    environment:
+      MLFLOW_URI: "http://mlflow:5000"
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: admin
+      AWS_SECRET_ACCESS_KEY: supersecret
+    
+  stream:
+    image: ingccps/streamlit:latest 
     ports:
-      - "8501:8501"
+      - "8090:8502"
+    container_name: Stream
     depends_on:
       - fastapi
-  
+
   mysql1:
     image: mysql:5.7
     container_name: db1

@@ -2,7 +2,7 @@
 from pydantic import BaseModel
 
 # 2. Class for models.
-class BienesRaices(BaseModel):
+class Penguins(BaseModel):
     bed:float = 3.0
     bath:float = 2.0
     acre_lot:float = 0.09

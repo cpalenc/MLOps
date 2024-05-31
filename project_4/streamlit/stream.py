@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 
 # URL FastAPI
-API_URL = "http://api:8000/predict"
+API_URL = "http://Fastapi:8000/predict"
 
 # Title
 st.title("Prediction of price")
