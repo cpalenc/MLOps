@@ -12,7 +12,7 @@ def clear_database_content():
     # Connect to the database
     with mysql_engine.connect() as conn:
         # Execute SQL query to delete content from table
-        conn.execute('DELETE FROM diabetes_data')
+        conn.execute('DELETE FROM raw_data_bienes_raices')
 
 # Define the DAG
 clear_database_content_dag = DAG(

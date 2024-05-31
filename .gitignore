@@ -23,4 +23,6 @@ venv/*
 
 # cache dirs
 __pycache__
-
+*.bkp
+*.meta
+xl*

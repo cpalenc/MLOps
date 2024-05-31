@@ -30,6 +30,16 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/airflow:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/airflow:1.0
           push: true
+      
+      - name: Construir y enviar imagen de jupiter
+        uses: docker/build-push-action@v3
+        with:
+          context: ./project_4/jupiter
+          file: ./project_4/jupiter/Dockerfile
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/jupiter:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/jupier:1.0
+          push: true
 
       - name: Construir y enviar imagen de API
         uses: docker/build-push-action@v3
