@@ -91,7 +91,7 @@ x-airflow-common:
 
 services:
   jupyter:
-    image: ingccps/jupiter:latest
+    image: ingccps/jupiter:1.0
     ports:
       - "8888:8888"
     volumes:
@@ -100,7 +100,7 @@ services:
       - JUPYTER_ENABLE_LAB=yes
  
   fastapi:
-    image: ingccps/api:1.0
+    image: ingccps/fastapi:1.0
     ports:
       - "8002:8002"  
   
