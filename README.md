@@ -55,7 +55,7 @@ ssh git clone https://github.com/cpalenc/MLOps.git -d proyecto_4_base
 
 ```bash
 cd MLOps/
-git checkout proyecto_1
+git checkout proyecto_4
 cd project_4
 ```
 3. Run the following Docker command:
