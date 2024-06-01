@@ -7,6 +7,8 @@ Code: 11179 <br>
 Professor: Cristian Diaz Alvarez <br>
 Members:
 
+    Daniel Chavarro - @anielFchavarro
+    Cristhian Palencia - @cpalenc
     Oscar Correa - @oecorrechag
 
 ## Table of Contents
@@ -35,15 +37,35 @@ Este proyecto emplea un modelo de aprendizaje automático para la predicción de
 
 link video: https://www.youtube.com/watch?v=qqPX2ic0lEI
 
+[![Watch the video](https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg)](https://www.youtube.com/watch?v=qqPX2ic0lEI)
+
+
 ## <a id='2'>2. Uso del Proyecto </a>
 
 ### <a id='2.1'>2.1 Guía de Usuario </a> 
 
 Para iniciar los servicios, se requiere la instalación de Docker en su máquina. Una vez instalado, ejecute el siguiente comando en la terminal para construir y levantar el contenedor:
 
+1. Download the repository.
+
 ```bash
-docker-compose up
+ssh git clone https://github.com/cpalenc/MLOps.git -d proyecto_4_base
 ```
+2. Navigate to the **proyecto_4_base** branch within the project_4 folder.
+
+```bash
+cd MLOps/
+git checkout proyecto_1
+cd project_4
+```
+3. Run the following Docker command:
+
+```bash
+docker compose up
+```
+
+4. Access the links below to find the services described in section 2.2.
+
 
 ### <a id='2.2'>2.2 Links de servicios </a> 
 
