@@ -35,9 +35,6 @@ Este proyecto emplea un modelo de aprendizaje automático para la predicción de
 
 link video: https://www.youtube.com/watch?v=qqPX2ic0lEI
 
-[![Watch the video](https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg)](https://www.youtube.com/watch?v=qqPX2ic0lEI)
-
-
 ## <a id='2'>2. Uso del Proyecto </a>
 
 ### <a id='2.1'>2.1 Guía de Usuario </a> 
