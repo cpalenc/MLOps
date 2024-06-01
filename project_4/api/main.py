@@ -2,15 +2,15 @@ import pandas as pd
 from sqlalchemy import create_engine
 import mlflow
 from fastapi import FastAPI
-from project_4.api.base import BienesRaices 
+from Penguins_val import Penguins 
 # import mlflow.pyfunc
 
 app = FastAPI()
 
-engine = create_engine('mysql://user1:password1@mysql1/database1')
+engine = create_engine('mysql+pymysql://root:airflow@mysql:3306/db')
 
 @app.post("/predict/")
-def predict(data:BienesRaices):
+def predict(data:Penguins):
 
     data = data.dict()
     bed = data['bed']
@@ -27,7 +27,7 @@ def predict(data:BienesRaices):
 
     print('ok_load data')
 
-    MLFLOW_TRACKING_URI = "http://mlflow:5000"
+    MLFLOW_TRACKING_URI = "http://Mlflow:5000"
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
     model_name = "tracking-house-XGB"
@@ -48,7 +48,7 @@ def predict(data:BienesRaices):
     df_salida['pred'] = out_model
 
     # save inputs and predic in new table
-    df_salida.to_sql('user_data', con=engine, if_exists='append', index=False)
+    df_salida.to_sql('penguin_data', con=engine, if_exists='append', index=False)
 
     return {
         "predicted": predicted_species
