@@ -2,53 +2,69 @@ import pandas as pd
 from sqlalchemy import create_engine
 import mlflow
 from fastapi import FastAPI
-from Penguins_val import Penguins 
-# import mlflow.pyfunc
+import mlflow.pyfunc
+from pydantic import BaseModel
 
 app = FastAPI()
 
-engine = create_engine('mysql+pymysql://root:airflow@mysql:3306/db')
+class input_chars(BaseModel):
+    bed: float = 8.0
+    bath: float = 2.0
+    acre_lot: float = 0.09
+    state: int = 10
+    house_size: float = 1409.0
+
+engine = create_engine('mysql://user1:password1@mysql1/database1')
 
 @app.post("/predict/")
-def predict(data:Penguins):
-
+def predict(data: input_chars):
     data = data.dict()
     bed = data['bed']
     bath = data['bath']
     acre_lot = data['acre_lot']
-    states = data['states']
+    state = data['state']
     house_size = data['house_size']
 
-    columns = ['bed', 'bath', 'acre_lot', 'states', 'house_size']
-
-    # Estandarizar variables
-    user_input = [bed, bath, acre_lot, states, house_size]
-    # user_input_scaled = func_transform(user_input)
-
-    print('ok_load data')
-
+    # Cargar el modelo para verificar los nombres de las características
     MLFLOW_TRACKING_URI = "http://Mlflow:5000"
-    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    client = mlflow.tracking.MlflowClient()
+    latest_versions = client.search_model_versions("name='modelo_test'")
+    latest_version = sorted(latest_versions, key=lambda x: x.creation_timestamp, reverse=True)[0]
+    model_uri = f"models:/tracking-price-XGBoost/{latest_version.version}"
+    model = mlflow.pyfunc.load_model(model_uri)
 
-    model_name = "tracking-house-XGB"
-    model_version = 1
+    # Obtener los nombres de las características esperadas por el modelo
+    expected_feature_names = model.metadata.get_input_schema().input_names()
+    print(f"Expected feature names: {expected_feature_names}")
 
-    print('ok_load model')
-
-    lr = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{model_version}")
-
+    # Ajustar los nombres de las características en el DataFrame
+    user_input = [bed, bath, acre_lot, state, house_size]
+    columns = ['bed', 'bath', 'acre_lot', 'state', 'house_size']
     df_pred = pd.DataFrame([user_input], columns=columns)
-    out_model = lr.predict(df_pred)[0]
-    predicted_species = "Prediccion de especie: {}".format(out_model)
+
+    # Cambiar el nombre de la columna si es necesario
+    if 'state' in expected_feature_names and 'states' not in expected_feature_names:
+        df_pred.rename(columns={'states': 'state'}, inplace=True)
+    elif 'states' in expected_feature_names and 'state' not in expected_feature_names:
+        df_pred.rename(columns={'state': 'states'}, inplace=True)
+
+    print(df_pred.head())
+
+    # Hacer la predicción
+    prediction = model.predict(df_pred)
+
+    print(prediction)
+
+    predicted_species = "Prediccion de precio: {}".format(prediction)
 
     print('ok_prediccion')
 
-    # Save user input and prediction to database
+    # Guardar entrada de usuario y predicción en la base de datos
     df_salida = df_pred.copy()
-    df_salida['pred'] = out_model
+    df_salida['pred'] = prediction
 
-    # save inputs and predic in new table
-    df_salida.to_sql('penguin_data', con=engine, if_exists='append', index=False)
+    # Guardar entrada y predicción en nueva tabla
+    df_salida.to_sql('user_data', con=engine, if_exists='append', index=False)
 
     return {
         "predicted": predicted_species
